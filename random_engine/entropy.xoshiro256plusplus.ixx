@@ -2,7 +2,6 @@
 
 export import entropy.basic;
 import entropy._xoshiro_base;
-import entropy.rotateleft;
 
 export namespace entropy
 {
