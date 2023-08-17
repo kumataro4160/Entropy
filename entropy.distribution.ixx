@@ -1,16 +1,26 @@
-﻿export module entropy.integer_distribution;
+﻿module;
+
+#include <cstdint>
+#include <numbers>
+#include <cmath>
+
+export module entropy.distribution;
 
 export import entropy.basic;
-import entropy.xoshiro256plusplus;
-import entropy.time_seed;
+import entropy.random_engine;
+import :math;
 
-namespace entropy
+namespace kuma
 {
 	Xoshiro256plusplus globalRandomEngine;
+
+	constexpr float64_t c = 0.5 / static_cast<float64_t>(0x8000000000000000ULL);
 }
 
-export namespace entropy
+export namespace kuma
 {
+	using namespace std;
+
 	template <class RandomEngine>
 	constexpr int8_t sampleIntegerDistribution_int8(RandomEngine& randomEngine)noexcept
 	{
@@ -97,5 +107,58 @@ export namespace entropy
 	inline uint64_t sampleIntegerDistribution_uint64()noexcept
 	{
 		return globalRandomEngine.next();
+	}
+
+	template <class RandomEngine>
+	constexpr float64_t sampleUniformDistribution_0to1(RandomEngine& randomEngine)noexcept
+	{
+		return c * static_cast<float64_t>(sampleIntegerDistribution_uint64(randomEngine));
+
+	}
+
+	inline float64_t sampleUniformDistribution_0to1()noexcept
+	{
+		return c * static_cast<float64_t>(sampleIntegerDistribution_uint64());
+	}
+
+	template <class RandomEngine>
+	constexpr float64_t sampleUniformDistribution(float64_t lower, float64_t upper, RandomEngine& randomEngine)noexcept
+	{
+		const float64_t zeroToOne = sampleUniformDistribution_0to1(randomEngine);
+		return (upper - lower) * zeroToOne + lower;
+	}
+
+	inline float64_t sampleUniformDistribution(float64_t lower, float64_t upper)noexcept
+	{
+		const float64_t zeroToOne = sampleUniformDistribution_0to1();
+		return (upper - lower) * zeroToOne + lower;
+	}
+
+	template <class RandomEngine>
+	constexpr float64_t sampleNormalDistribution(RandomEngine& randomEngine)noexcept
+	{
+		const float64_t r1 = sampleUniformDistribution_0to1(randomEngine);
+		const float64_t r2 = sampleUniformDistribution_0to1(randomEngine);
+		return kuma::sqrt(-2.0 * kuma::log(r1)) * kuma::cos(2.0 * std::numbers::pi * r2);
+	}
+
+	inline float64_t sampleNormalDistribution()noexcept
+	{
+		const float64_t r1 = sampleUniformDistribution_0to1();
+		const float64_t r2 = sampleUniformDistribution_0to1();
+		return std::sqrt(-2.0 * std::log(r1)) * std::cos(2.0 * std::numbers::pi * r2);
+	}
+
+	template <class RandomEngine>
+	constexpr bool sampleBinomialTrial(float64_t probabilityOfTrue, RandomEngine& randomEngine)noexcept
+	{
+		const float64_t randomValue0to1 = sampleUniformDistribution_0to1(randomEngine);
+		return randomValue0to1 < probabilityOfTrue;
+	}
+
+	inline bool sampleBinomialTrial(float64_t probabilityOfTrue)noexcept
+	{
+		const float64_t randomValue0to1 = sampleUniformDistribution_0to1();
+		return randomValue0to1 < probabilityOfTrue;
 	}
 }
