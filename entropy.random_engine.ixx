@@ -1,6 +1,7 @@
 ﻿module;
 
 #include <cstdint>
+#include <bit>
 
 export module entropy.random_engine;
 
@@ -33,11 +34,6 @@ namespace kuma
 {
 	using namespace std;
 
-	constexpr uint64_t rotateLeft(uint64_t x, int n)noexcept//0 <= n <= 64
-	{
-		return (x << n) | (x >> (64 - n));
-	}
-
 	class _XoshiroBase
 	{
 	public:
@@ -66,7 +62,7 @@ namespace kuma
 			s[1] ^= s[2];
 			s[0] ^= s[3];
 			s[2] ^= t;
-			s[3] = rotateLeft(s[3], 45);
+			s[3] = std::rotl(s[3], 45);
 		}
 		constexpr void jump_2_128()noexcept
 		{
@@ -165,7 +161,7 @@ export namespace kuma
 		constexpr uint64_t next()noexcept
 		{
 			base.update();
-			return rotateLeft(base.s[0] + base.s[3], 23) + base.s[0];
+			return std::rotl(base.s[0] + base.s[3], 23) + base.s[0];
 		}
 	};
 
@@ -186,7 +182,7 @@ export namespace kuma
 		constexpr uint64_t next()noexcept
 		{
 			base.update();
-			return rotateLeft(base.s[1] * 5, 7) * 9;
+			return std::rotl(base.s[1] * 5, 7) * 9;
 		}
 	};
 }
