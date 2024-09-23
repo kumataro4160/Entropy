@@ -1,13 +1,12 @@
-﻿module;
+﻿#ifndef KUMATARO_INCLUDE_ENTROPY_DISTRIBUTION_MATH_H
+#define KUMATARO_INCLUDE_ENTROPY_DISTRIBUTION_MATH_H
 
 #include <numbers>
 #include <cstdint>
+#include "entropy.base.h"
 
-export module entropy.distribution:math;
 
-export import entropy.basic;
-
-namespace kuma
+namespace kuma::impl_entropy
 {
 	// 0.25 < x < 2.0
 	constexpr float64_t sqrt_limited(float64_t x)noexcept
@@ -110,8 +109,10 @@ namespace kuma
 	}
 }
 
-export namespace kuma
+namespace kuma
 {
+	using namespace impl_entropy;
+
 	constexpr float64_t sqrt_constexpr(float64_t x)noexcept
 	{
 		if(0.25 < x)
@@ -176,3 +177,6 @@ export namespace kuma
 		return log1p_limited(x - 1.0);// sqrt(1.0/e) < x < sqrt(e)
 	}
 }
+
+
+#endif

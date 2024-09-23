@@ -1,25 +1,25 @@
-﻿module;
+﻿#ifndef KUMATARO_INCLUDE_ENTROPY_DISTRIBUTION_H
+#define KUMATARO_INCLUDE_ENTROPY_DISTRIBUTION_H
 
 #include <cstdint>
 #include <numbers>
 #include <cmath>
+#include "entropy.base.h"
+#include "entropy.random_engine.h"
+#include "entropy.distribution.math.h"
 
-export module entropy.distribution;
 
-export import entropy.basic;
-import entropy.random_engine;
-import :math;
-
-namespace kuma
+namespace kuma::impl_entropy
 {
-	Xoshiro256plusplus globalRandomEngine;
+	static Xoshiro256plusplus globalRandomEngine;
 
 	constexpr float64_t c = 0.5 / static_cast<float64_t>(0x8000000000000000ULL);
 }
 
-export namespace kuma
+namespace kuma
 {
 	using namespace std;
+	using namespace impl_entropy;
 
 	template <class RandomEngine>
 	constexpr int8_t sampleIntegerDistribution_int8(RandomEngine& randomEngine)noexcept
@@ -162,3 +162,6 @@ export namespace kuma
 		return randomValue0to1 < probabilityOfTrue;
 	}
 }
+
+
+#endif

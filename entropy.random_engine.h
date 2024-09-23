@@ -1,9 +1,9 @@
-﻿module;
+﻿#ifndef KUMATARO_INCLUDE_ENTROPY_RANDOM_ENGINE_H
+#define KUMATARO_INCLUDE_ENTROPY_RANDOM_ENGINE_H
 
 #include <cstdint>
 #include <bit>
 
-export module entropy.random_engine;
 
 namespace kuma
 {
@@ -30,7 +30,7 @@ namespace kuma
 	}
 }
 
-namespace kuma
+namespace kuma::impl_entropy
 {
 	using namespace std;
 
@@ -119,9 +119,10 @@ namespace kuma
 	};
 }
 
-export namespace kuma
+namespace kuma
 {
 	using namespace std;
+	using namespace impl_entropy;
 
 	class Xoshiro256plus
 	{
@@ -186,3 +187,6 @@ export namespace kuma
 		}
 	};
 }
+
+
+#endif
