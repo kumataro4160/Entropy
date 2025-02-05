@@ -1,12 +1,12 @@
 ﻿#ifndef KUMATARO_INCLUDE_ENTROPY_DISTRIBUTION_H
 #define KUMATARO_INCLUDE_ENTROPY_DISTRIBUTION_H
 
+#include "entropy.base.h"
+#include "entropy.random_engine.h"
+#include "../RealMath/realmath.h"
 #include <cstdint>
 #include <numbers>
 #include <cmath>
-#include "entropy.base.h"
-#include "entropy.random_engine.h"
-#include "entropy.distribution.math.h"
 
 
 namespace kuma::impl_entropy
